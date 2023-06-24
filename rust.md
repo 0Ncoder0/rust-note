@@ -45,3 +45,46 @@ cargo : Rust 工具链中内置的构建系统及包管理器
 
 - `cargo check` 检查是否可以通过编译
 - `cargo build --release` 在优化模式下构建用于发布的可执行程序，并置于 target/release 目录下
+
+## 编写一个猜数游戏
+
+```rs
+use std::io;
+use std::cmp::Ordering;
+use rand::Rng;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1, 101);
+
+    loop {
+        println!("Please input your guess.");
+
+        let mut guess = String::new();
+
+        io::stdin().read_line(&mut guess).expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                continue;
+            }
+        };
+
+        println!("You guessed: {}", guess);
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}
+
+```
+
+ps: 别忘了安装依赖 rand `cargo add rand@0.3.14`
