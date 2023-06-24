@@ -88,3 +88,117 @@ fn main() {
 ```
 
 ps: 别忘了安装依赖 rand `cargo add rand@0.3.14`
+
+## 通用编程概念
+
+### 定义不可变变量
+
+```rs
+let x = 5;
+x = 6; // 报错
+```
+
+### 定义可变变量
+
+```rs
+let mut x = 5;
+x = 6; // 不报错
+```
+
+### 定义常量
+
+- 常量必须显式地标注值的类型
+- 常量绑定的值必须是编译时可确定的
+
+```rs
+const TRUE: i32 = 1;
+const FALSE: i32 = 0;
+const OTHER: i32 = {
+    let a = 0;
+    let b = 1;
+    a + b
+}; // 这也能编译时确定？
+```
+
+```rs
+fn test() -> i32 { -1 }
+const OTHER: i32 = test(); // 报错
+```
+
+### 隐藏（shadow）
+
+- Rust 支持重复使用 let 关键字覆盖掉同名变量
+- 与 mut 的区别在于，可以覆盖不同的变量类型
+- 甚至能用 mut 覆盖
+
+```rs
+let x = 5;
+let x = 6;
+let x = "hello";
+let x = x.len();
+let mut x = 1;
+x = 101;
+// 请问，let 默认不可变的意义是什么?
+```
+
+### 数据类型
+
+- 大部分情况编译器可自行推导出变量类型
+- 部分情况需要显式标注类型
+
+```rs
+let x = 5; // 自动推导出 x 的类型为 i32
+let x = "42".parse().expect("Not a number!"); // 不可自动推导
+let x: i32 = "42".parse().expect("Not a number!"); // 显式标注类型
+```
+
+### 标量类型
+
+- Rust 内建四种基础的标量类型：整数、浮点、布尔、字符
+- 对应的常用的类型：i32, f64, bool, char
+
+```rs
+let x: i32 = 1;
+let x: f64 = 1.1;
+let x: bool = false;
+let x: char = 'x'; // 注：char 类型使用单引号
+```
+
+### 复合类型
+
+Rust 内置两种基础的复合类型：元祖（tuple）和数组（array）
+
+```rs
+let x: (i32, f64, char) = (1, 1.1, '1'); // 元组的声明，类型标注不是必须的
+let (i, f, c) = x; // 元组的解构
+let x = x.0; // 元组的访问
+```
+
+```rs
+let x: [i32; 3] = [1, 2, 3]; // 数组的声明，类型标注不是必须的
+let x = [1; 5]; // 等价于 let x = [1, 1, 1, 1, 1];
+let x = x[0]; // 数组的访问
+```
+
+### 函数
+
+- 函数默认返回空的元组类型
+- 函数最后一行不带分号则表示返回值，在最后一行之前若要返回需要显式使用 return
+
+```rs
+fn demo_function(name: &str) { // -> ()
+    println!("Hello, {}!", name);
+}
+
+fn plus_one(a: i32) -> i32 {
+    a + 1
+}
+
+fn big_one(a: i32, b: i32) -> i32 {
+    if a > b {
+        return a;
+    }
+
+    b
+}
+```
